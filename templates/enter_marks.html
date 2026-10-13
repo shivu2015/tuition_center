@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enter Marks</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+    <p>Enter Examination Marks</p>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/exams">Exams</a>
+    <a href="/exam_results">Results</a>
+</nav>
+
+<main>
+    <h2>{{ exam['exam_name'] }}</h2>
+
+    <p><strong>Course:</strong> {{ exam['course_name'] }}</p>
+    <p><strong>Exam Date:</strong> {{ exam['exam_date'] }}</p>
+    <p><strong>Maximum Marks:</strong> {{ exam['max_marks'] }}</p>
+
+    <form method="POST">
+
+        <table border="1" width="100%">
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Marks Obtained</th>
+            </tr>
+
+            {% for student in students %}
+            <tr>
+                <td>{{ student['id'] }}</td>
+                <td>{{ student['name'] }}</td>
+                <td>
+                    <input type="number"
+                           name="marks_{{ student['id'] }}"
+                           min="0"
+                           max="{{ exam['max_marks'] }}"
+                           step="0.01"
+                           value="{{ saved_marks.get(student['id'], '') }}"
+                           required>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+
+        <button type="submit">Save Marks</button>
+    </form>
+</main>
+
+</body>
+</html>

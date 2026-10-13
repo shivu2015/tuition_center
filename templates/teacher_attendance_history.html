@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance History</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Student-wise Attendance History</h1>
+    <p>Tuition Center Management System</p>
+</header>
+
+<main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message {{ category }}" role="status">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="enrollment-panel">
+        <h2>Select Course and Date</h2>
+
+        {% if courses %}
+        <form method="GET"
+              action="{{ url_for('teacher_attendance_history') }}">
+
+            <div class="form-group">
+                <label for="course_id">Assigned Course</label>
+                <select id="course_id" name="course_id" required>
+                    <option value="">Select a course</option>
+                    {% for course in courses %}
+                    <option value="{{ course['id'] }}"
+                        {% if selected_course_id|string == course['id']|string %}
+                            selected
+                        {% endif %}>
+                        {{ course['course_name'] }}
+                        — {{ course['class_name'] }}
+                        — {{ course['subject'] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="attendance_date">Attendance Date</label>
+                <input type="date"
+                       id="attendance_date"
+                       name="attendance_date"
+                       value="{{ attendance_date }}"
+                       required>
+            </div>
+
+            <button type="submit" class="primary-btn">
+                View Attendance
+            </button>
+        </form>
+        {% else %}
+        <div class="empty-state">
+            <p>No courses are assigned to your account.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    {% if selected_course %}
+    <section class="enrollment-panel">
+        <h2>Attendance Report</h2>
+
+        <p>
+            <strong>Course:</strong>
+            {{ selected_course['course_name'] }}
+        </p>
+        <p>
+            <strong>Class:</strong>
+            {{ selected_course['class_name'] }}
+        </p>
+        <p>
+            <strong>Date:</strong>
+            {{ attendance_date }}
+        </p>
+
+        {% if students %}
+        <div class="table-responsive">
+            
+            <table class="enrollment-table">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Student Name</th>
+                        <th>Phone</th>
+                        <th>Selected Date Status</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Total Recorded</th>
+                        <th>Attendance %</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+
+                        <td>{{ student['student_name'] }}</td>
+
+                        <td>
+                            {{ student['phone'] or 'Not provided' }}
+                        </td>
+
+                        <td>
+                            {% if student['attendance_status'] %}
+                                {{ student['attendance_status'] }}
+                            {% else %}
+                                Not marked
+                            {% endif %}
+                        </td>
+
+                        <td>{{ student['present_count'] or 0 }}</td>
+
+                        <td>{{ student['absent_count'] or 0 }}</td>
+
+                        <td>{{ student['total_recorded'] or 0 }}</td>
+
+                        <td>
+                            {{ "%.1f"|format(student['attendance_percentage'] or 0) }}%
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>No active students are enrolled in this course.</p>
+        </div>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <section class="enrollment-panel">
+        <a href="{{ url_for('teacher_dashboard') }}">
+            Back to Teacher Dashboard
+        </a>
+    </section>
+
+</main>
+
+<footer>
+    <p>Tuition Center Management System</p>
+</footer>
+
+</body>
+</html>

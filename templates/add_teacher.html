@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Teacher</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/teachers">Teachers</a>
+</nav>
+
+<main>
+    <h2>Add New Teacher</h2>
+
+    <form method="POST" action="/add_teacher">
+
+        <label>Teacher Name</label><br>
+        <input type="text" name="name" required>
+        <br><br>
+
+        <label>Subject</label><br>
+        <input type="text" name="subject" required>
+        <br><br>
+
+        <label>Phone</label><br>
+        <input type="text" name="phone">
+        <br><br>
+
+        <label>Email</label><br>
+        <input type="email" name="email">
+        <br><br>
+
+        <label>Qualification</label><br>
+        <input type="text" name="qualification">
+        <br><br>
+
+        <button type="submit">Save Teacher</button>
+    </form>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Student</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header>
+        <h1>Tuition Center Management System</h1>
+    </header>
+
+    <nav>
+        <a href="/">Dashboard</a>
+        <a href="/students">Students</a>
+        <a href="/add_student">Add Student</a>
+    </nav>
+
+    <main>
+
+        <h2>Edit Student</h2>
+
+        <form method="POST">
+
+            <label>Name</label><br>
+
+            <input type="text"
+                   name="name"
+                   value="{{ student['name'] }}"
+                   required>
+
+            <br><br>
+
+            <label>Class</label><br>
+
+            <input type="text"
+                   name="class_name"
+                   value="{{ student['class_name'] }}"
+                   required>
+
+            <br><br>
+
+            <label>Phone</label><br>
+
+            <input type="text"
+                   name="phone"
+                   value="{{ student['phone'] }}">
+
+            <br><br>
+
+            <label>Email</label><br>
+
+            <input type="email"
+                   name="email"
+                   value="{{ student['email'] }}">
+
+            <br><br>
+
+            <label>Address</label><br>
+
+            <textarea name="address">{{ student['address'] }}</textarea>
+
+            <br><br>
+
+            <button type="submit">
+                Update Student
+            </button>
+
+        </form>
+
+    </main>
+
+</body>
+
+</html>

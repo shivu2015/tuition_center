@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Management</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+    <p>Attendance Management</p>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/students">Students</a>
+    <a href="/teachers">Teachers</a>
+    <a href="/courses">Courses</a>
+    <a href="/attendance">Attendance</a>
+</nav>
+
+<main>
+    <h2>Mark Attendance</h2>
+
+    <form method="POST" action="/attendance">
+
+        <label>Course</label><br>
+
+        <select name="course_id" required>
+            <option value="">Select Course</option>
+
+            {% for course in courses %}
+            <option value="{{ course['id'] }}">
+                {{ course['course_name'] }}
+                - Class {{ course['class_name'] }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>Attendance Date</label><br>
+
+        <input type="date" name="attendance_date"
+               value="{{ today }}" required>
+
+        <br><br>
+
+        <button type="submit">Load Students</button>
+
+    </form>
+
+    {% if selected_course %}
+
+    <hr>
+
+    <h2>Mark Students Present or Absent</h2>
+
+    <form method="POST" action="/save_attendance">
+
+        <input type="hidden" name="course_id"
+               value="{{ selected_course }}">
+
+        <input type="hidden" name="attendance_date"
+               value="{{ selected_date }}">
+
+        <table border="1" width="100%">
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Attendance</th>
+            </tr>
+
+            {% for student in students %}
+            <tr>
+                <td>{{ student['id'] }}</td>
+                <td>{{ student['name'] }}</td>
+                <td>
+                    <select name="status_{{ student['id'] }}">
+                        <option value="Present"
+                            {% if existing[student['id']] == 'Present' %}
+                                selected
+                            {% endif %}>
+                            Present
+                        </option>
+
+                        <option value="Absent"
+                            {% if existing[student['id']] == 'Absent' %}
+                                selected
+                            {% endif %}>
+                            Absent
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+
+        <button type="submit">Save Attendance</button>
+
+    </form>
+
+    {% endif %}
+
+    <hr>
+
+    <h2>Attendance Records</h2>
+
+    <table border="1" width="100%">
+        <tr>
+            <th>Date</th>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Status</th>
+        </tr>
+
+        {% for record in records %}
+        <tr>
+            <td>{{ record['attendance_date'] }}</td>
+            <td>{{ record['student_name'] }}</td>
+            <td>{{ record['course_name'] }}</td>
+            <td>{{ record['status'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if not records %}
+        <p>No attendance records available.</p>
+    {% endif %}
+
+</main>
+
+</body>
+</html>

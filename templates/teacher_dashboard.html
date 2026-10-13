@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Teacher Dashboard</h1>
+    <p>Tuition Center Management System</p>
+</header>
+
+<main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message {{ category }}" role="status">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="enrollment-panel">
+        <h2>Welcome, {{ teacher['name'] }}</h2>
+        <p><strong>Subject:</strong> {{ teacher['subject'] or 'Not specified' }}</p>
+        <p><strong>Username:</strong> {{ session['teacher_username'] }}</p>
+    </section>
+
+    <section class="enrollment-panel">
+        <h2>My Assigned Courses</h2>
+
+        {% if courses %}
+            <div class="table-responsive">
+                <table class="enrollment-table">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses %}
+                            <tr>
+                                <td>{{ course['course_name'] }}</td>
+                                <td>{{ course['class_name'] }}</td>
+                                <td>{{ course['subject'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No courses assigned</h3>
+                <p>Please contact the administrator to assign your courses.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    
+    <section class="enrollment-panel">
+        <h2>My Teaching Timetable</h2>
+
+        {% if timetable_entries %}
+            <div class="table-responsive">
+                <table class="enrollment-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Course</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Room</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in timetable_entries %}
+                        <tr>
+                            <td>{{ entry['day_of_week'] }}</td>
+                            <td>
+                                {{ entry['start_time'] }}
+                                – {{ entry['end_time'] }}
+                            </td>
+                            <td>{{ entry['course_name'] }}</td>
+                            <td>{{ entry['class_name'] }}</td>
+                            <td>{{ entry['subject'] }}</td>
+                            <td>{{ entry['room'] or 'Not specified' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No timetable available</h3>
+                <p>
+                    The administrator has not scheduled any classes
+                    for your assigned courses yet.
+                </p>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- Attendance Summary -->
+    <section class="enrollment-panel">
+
+        <h2>My Attendance Summary</h2>
+
+        {% if attendance_summary %}
+
+        <div class="table-responsive">
+            <table class="enrollment-table">
+
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Class</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Total Marked</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in attendance_summary %}
+                    <tr>
+                        <td>{{ item['course_name'] }}</td>
+                        <td>{{ item['class_name'] }}</td>
+                        <td>{{ item['present_count'] or 0 }}</td>
+                        <td>{{ item['absent_count'] or 0 }}</td>
+                        <td>{{ item['total_marked'] or 0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+            <h3>No Attendance Records</h3>
+            <p>
+                Attendance summaries will appear here after attendance
+                is recorded for your assigned courses.
+            </p>
+        </div>
+
+        {% endif %}
+
+    </section>
+    
+    <section class="enrollment-panel">
+        <h2>Attendance Management</h2>
+
+        <p>Manage attendance and review student records for your assigned courses.</p>
+
+        <div class="dashboard-cards">
+
+            <div class="dashboard-card">
+                <h3>Mark Attendance</h3>
+                <p>Record or update Present and Absent status.</p>
+                <a href="{{ url_for('teacher_attendance') }}">
+                    Open Attendance
+                </a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Attendance History</h3>
+                <p>Review student-wise attendance for a selected date.</p>
+                <a href="{{ url_for('teacher_attendance_history') }}">
+                    View Attendance History
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <div class="logout-section">
+        <span>Signed in as Teacher</span>
+        <form method="POST" action="{{ url_for('teacher_logout') }}">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+</main>
+
+<footer>
+    <p>Tuition Center Management System</p>
+</footer>
+
+</body>
+</html>

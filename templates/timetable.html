@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Management</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <h1>Timetable Management</h1>
+    <p>Tuition Center Management System</p>
+</header>
+
+<main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message {{ category }}" role="status">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="enrollment-panel">
+        <h2>Add Timetable Entry</h2>
+
+        {% if courses %}
+        <form method="POST" action="{{ url_for('manage_timetable') }}">
+
+            <div class="form-group">
+                <label for="course_id">Course</label>
+                <select id="course_id" name="course_id" required>
+                    <option value="">Select a course</option>
+                    {% for course in courses %}
+                    <option value="{{ course['id'] }}">
+                        {{ course['course_name'] }}
+                        — {{ course['class_name'] }}
+                        — {{ course['subject'] }}
+                        — Teacher: {{ course['teacher_name'] or 'Not assigned' }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="day_of_week">Day</label>
+                <select id="day_of_week" name="day_of_week" required>
+                    <option value="">Select a day</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="start_time">Start Time</label>
+                <input type="time" id="start_time" name="start_time"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="end_time">End Time</label>
+                <input type="time" id="end_time" name="end_time"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="room">Room / Classroom (optional)</label>
+                <input type="text" id="room" name="room"
+                       placeholder="Example: Room 101">
+            </div>
+
+            <button type="submit" class="primary-btn">
+                Add to Timetable
+            </button>
+        </form>
+        {% else %}
+        <div class="empty-state">
+            <p>No courses are available. Create a course first.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="enrollment-panel">
+        <h2>Scheduled Classes</h2>
+
+        {% if timetable_entries %}
+        <div class="table-responsive">
+            <table class="enrollment-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Course</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Room</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in timetable_entries %}
+                    <tr>
+                        <td>{{ entry['day_of_week'] }}</td>
+                        <td>
+                            {{ entry['start_time'] }}
+                            – {{ entry['end_time'] }}
+                        </td>
+                        <td>{{ entry['course_name'] }}</td>
+                        <td>{{ entry['class_name'] }}</td>
+                        <td>{{ entry['subject'] }}</td>
+                        <td>{{ entry['teacher_name'] or 'Not assigned' }}</td>
+                        <td>{{ entry['room'] or 'Not specified' }}</td>
+                        <td>
+                            <form method="POST"
+                                  action="{{ url_for(
+                                      'delete_timetable_entry',
+                                      entry_id=entry['id']
+                                  ) }}"
+                                  onsubmit="return confirm(
+                                      'Delete this timetable entry?'
+                                  );">
+                                <button type="submit" class="logout-btn">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No timetable entries yet</h3>
+            <p>Add a class using the form above.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <p><a href="{{ url_for('home') }}">Back to Admin Dashboard</a></p>
+
+</main>
+
+<footer>
+    <p>Tuition Center Management System</p>
+</footer>
+</body>
+</html>

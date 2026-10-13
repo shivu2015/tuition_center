@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment History</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+    <p>Payment History</p>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/fees">Fee Management</a>
+</nav>
+
+<main>
+    <h2>Payment History</h2>
+
+    <p><strong>Student:</strong> {{ fee['student_name'] }}</p>
+    <p><strong>Course:</strong> {{ fee['course_name'] }}</p>
+    <p><strong>Total Fee:</strong> ₹{{ "%.2f"|format(fee['total_fee']) }}</p>
+    <p><strong>Total Paid:</strong> ₹{{ "%.2f"|format(fee['paid']) }}</p>
+    <p><strong>Balance:</strong> ₹{{ "%.2f"|format(fee['balance']) }}</p>
+
+    <table border="1" width="100%">
+        <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Notes</th>
+        </tr>
+
+        {% for payment in payments %}
+        <tr>
+            <td>{{ payment['payment_date'] }}</td>
+            <td>₹{{ "%.2f"|format(payment['amount']) }}</td>
+            <td>{{ payment['payment_method'] }}</td>
+            <td>{{ payment['notes'] or '-' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if not payments %}
+        <p>No payments recorded yet.</p>
+    {% endif %}
+
+</main>
+</body>
+</html>

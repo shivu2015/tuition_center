@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Course</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/courses">Courses</a>
+</nav>
+
+<main>
+    <h2>Add New Course</h2>
+
+    <form method="POST" action="/add_course">
+
+        <label>Course Name</label><br>
+        <input type="text" name="course_name" required>
+        <br><br>
+
+        <label>Class/Grade</label><br>
+        <input type="text" name="class_name" required>
+        <br><br>
+
+        <label>Subject</label><br>
+        <input type="text" name="subject" required>
+        <br><br>
+
+        <label>Assign Teacher</label><br>
+        <select name="teacher_id">
+            <option value="">Not assigned</option>
+
+            {% for teacher in teachers %}
+            <option value="{{ teacher['id'] }}">
+                {{ teacher['name'] }} - {{ teacher['subject'] }}
+            </option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label>Course Fee (₹)</label><br>
+        <input type="number" name="fee"
+               min="0" step="0.01" value="0" required>
+        <br><br>
+
+        <button type="submit">Save Course</button>
+
+    </form>
+</main>
+
+</body>
+</html>

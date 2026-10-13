@@ -12,53 +12,71 @@
 
     <header>
         <h1>V-Tutelege Tuition Center Management System</h1>
+        
+        <div class="logout-section">
+            <span>
+                Welcome, {{ session.get('admin_username', 'Admin') }}
+            </span>
+
+            <form action="{{ url_for('logout') }}" method="POST">
+                <button type="submit" class="logout-btn">
+                    Sign Out
+                </button>
+            </form>
+        </div>
         <p>Admin Dashboard</p>
     </header>
 
     <nav>
         <a href="/">Dashboard</a>
         <a href="/students">Students</a>
+        <a href="/student_accounts">Student Login Accounts</a>
         <a href="/teachers">Teachers</a>
         <a href="/courses">Courses</a>
+        <a href="/enrollments">Student Enrollment</a>
         <a href="/attendance">Attendance</a>
         <a href="/fees">Fees</a>
         <a href="/exams">Exams</a>
     </nav>
 
     <main>
-
         <h2>Dashboard</h2>
+        <div class="dashboard-cards">
 
-        <div class="cards">
-
-            <div class="card">
-                <h3>Students</h3>
-                <p>Manage Students</p>
+            <div class="dashboard-card">
+                <h3>Total Students</h3>
+                <p>{{ student_count }}</p>
+                <a href="/students">View Students</a>
             </div>
 
-            <div class="card">
-                <h3>Teachers</h3>
-                <p>Manage Teachers</p>
+            <div class="dashboard-card">
+                <h3>Total Teachers</h3>
+                <p>{{ teacher_count }}</p>
+                <a href="/teachers">View Teachers</a>
             </div>
 
-            <div class="card">
-                <h3>Courses</h3>
-                <p>Manage Courses</p>
+            <div class="dashboard-card">
+                <h3>Total Courses</h3>
+                <p>{{ course_count }}</p>
+                <a href="/courses">View Courses</a>
             </div>
 
-            <div class="card">
-                <h3>Attendance</h3>
-                <p>Manage Attendance</p>
+            <div class="dashboard-card">
+                <h3>Total Exams</h3>
+                <p>{{ exam_count }}</p>
+                <a href="/exams">View Exams</a>
             </div>
 
-            <div class="card">
-                <h3>Fees</h3>
-                <p>Manage Fees</p>
+            <div class="dashboard-card">
+                <h3>Fee Records</h3>
+                <p>{{ fee_record_count }}</p>
+                <a href="/fees">View Fees</a>
             </div>
 
-            <div class="card">
-                <h3>Exams</h3>
-                <p>Manage Exams & Marks</p>
+            <div class="dashboard-card">
+                <h3>Pending Fees</h3>
+                <p>₹{{ "%.2f"|format(pending_fees) }}</p>
+                <a href="/fees">Check Payments</a>
             </div>
 
         </div>

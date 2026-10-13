@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Accounts</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+
+    <h1>Student Login Accounts</h1>
+    <p><a href="{{ url_for('home') }}">Back to Dashboard</a></p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p class="message {{ category }}">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="enrollment-panel">
+        <h2>Create Student Account</h2>
+
+        {% if students %}
+        <form method="POST" action="{{ url_for('manage_student_accounts') }}">
+
+            <label for="student_id">Student</label>
+            <select name="student_id" id="student_id" required>
+                <option value="">Select student</option>
+                {% for student in students %}
+                    <option value="{{ student['id'] }}">
+                        {{ student['name'] }} — {{ student['class_name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username"
+                   autocomplete="off" required>
+
+            <label for="password">Temporary Password</label>
+            <input type="password" id="password" name="password"
+                   minlength="8" autocomplete="new-password" required>
+
+            <button type="submit" class="primary-btn">
+                Create Account
+            </button>
+        </form>
+        {% else %}
+            <p>All existing students already have accounts, or no students have been added yet.</p>
+        {% endif %}
+    </section>
+
+    <section class="enrollment-panel">
+        <h2>Existing Student Accounts</h2>
+
+        <div class="table-responsive">
+            <table class="enrollment-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Class</th>
+                        <th>Username</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for account in accounts %}
+                    <tr>
+                        <td>{{ account['name'] }}</td>
+                        <td>{{ account['class_name'] }}</td>
+                        <td>{{ account['username'] }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">No student accounts created yet.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

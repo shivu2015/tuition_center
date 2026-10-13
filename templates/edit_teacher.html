@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Teacher</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/teachers">Teachers</a>
+</nav>
+
+<main>
+    <h2>Edit Teacher</h2>
+
+    <form method="POST">
+
+        <label>Name</label><br>
+        <input type="text" name="name"
+               value="{{ teacher['name'] }}" required>
+        <br><br>
+
+        <label>Subject</label><br>
+        <input type="text" name="subject"
+               value="{{ teacher['subject'] }}" required>
+        <br><br>
+
+        <label>Phone</label><br>
+        <input type="text" name="phone"
+               value="{{ teacher['phone'] }}">
+        <br><br>
+
+        <label>Email</label><br>
+        <input type="email" name="email"
+               value="{{ teacher['email'] }}">
+        <br><br>
+
+        <label>Qualification</label><br>
+        <input type="text" name="qualification"
+               value="{{ teacher['qualification'] }}">
+        <br><br>
+
+        <button type="submit">Update Teacher</button>
+    </form>
+</main>
+
+</body>
+</html>

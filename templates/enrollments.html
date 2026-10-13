@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Enrollment | Tuition Center</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Page Header -->
+        <header class="page-header">
+            <div>
+                <h1>Student Course Enrollment</h1>
+                <p>Manage student registrations for courses</p>
+            </div>
+
+            <a href="{{ url_for('home') }}" class="back-btn">
+                Back to Dashboard
+            </a>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="enrollment-nav">
+            <a href="{{ url_for('home') }}">Dashboard</a>
+            <a href="{{ url_for('students') }}">Students</a>
+            <a href="{{ url_for('teachers') }}">Teachers</a>
+            <a href="{{ url_for('courses') }}">Courses</a>
+            <a href="{{ url_for('enrollments') }}" class="active">
+                Enrollments
+            </a>
+        </nav>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="enrollment-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- Summary Card -->
+        <div class="enrollment-summary">
+            <div class="enrollment-card">
+                <h3>Total Enrollments</h3>
+                <p>{{ enrollments|length }}</p>
+            </div>
+        </div>
+
+        <!-- Enrollment Form -->
+        <section class="enrollment-panel">
+
+            <h2>Enroll a Student</h2>
+            <p class="section-description">
+                Select a student and the course they will attend.
+            </p>
+
+            <form method="POST"
+                  action="{{ url_for('enrollments') }}"
+                  class="enrollment-form">
+
+                <div class="form-group">
+                    <label for="student_id">Student</label>
+
+                    <select id="student_id"
+                            name="student_id"
+                            required>
+                        <option value="">Select a student</option>
+
+                        {% for student in students %}
+                            <option value="{{ student['id'] }}">
+                                {{ student['name'] }}
+                                — {{ student['class_name'] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="course_id">Course</label>
+
+                    <select id="course_id"
+                            name="course_id"
+                            required>
+                        <option value="">Select a course</option>
+
+                        {% for course in courses %}
+                            <option value="{{ course['id'] }}">
+                                {{ course['course_name'] }}
+                                — {{ course['class_name'] }}
+                                (₹{{ course['fee'] }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="enrollment_date">
+                        Enrollment Date
+                    </label>
+
+                    <input type="date"
+                           id="enrollment_date"
+                           name="enrollment_date"
+                           value="{{ today }}"
+                           required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="primary-btn">
+                        Enroll Student
+                    </button>
+
+                    <a href="{{ url_for('enrollments') }}"
+                       class="secondary-btn">
+                        Clear Form
+                    </a>
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- Enrollment Records -->
+        <section class="enrollment-panel">
+
+            <div class="table-header">
+                <div>
+                    <h2>Enrollment Records</h2>
+                    <p class="section-description">
+                        Students and their registered courses
+                    </p>
+                </div>
+
+                <span class="record-count">
+                    {{ enrollments|length }} records
+                </span>
+            </div>
+
+            {% if enrollments %}
+                <div class="table-responsive">
+
+                    <table class="enrollment-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student Name</th>
+                                <th>Student Class</th>
+                                <th>Course</th>
+                                <th>Course Class</th>
+                                <th>Enrollment Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in enrollments %}
+                                <tr>
+                                    <td>{{ item['id'] }}</td>
+                                    <td>
+                                        <strong>
+                                            {{ item['student_name'] }}
+                                        </strong>
+                                    </td>
+                                    <td>{{ item['student_class'] }}</td>
+                                    <td>{{ item['course_name'] }}</td>
+                                    <td>{{ item['course_class'] }}</td>
+                                    <td>{{ item['enrollment_date'] }}</td>
+                                    <td>
+                                        <span class="status-badge
+                                            {% if item['status'] == 'Active' %}
+                                                status-active
+                                            {% else %}
+                                                status-inactive
+                                            {% endif %}">
+                                            {{ item['status'] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No enrollments yet</h3>
+                    <p>
+                        Use the form above to enroll your first student.
+                    </p>
+                </div>
+            {% endif %}
+
+        </section>
+
+        <footer class="page-footer">
+            Tuition Center Management System
+        </footer>
+
+    </div>
+
+</body>
+</html>

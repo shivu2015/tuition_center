@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fee Management</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+    <p>Fee Management</p>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/students">Students</a>
+    <a href="/courses">Courses</a>
+    <a href="/attendance">Attendance</a>
+    <a href="/fees">Fees</a>
+</nav>
+
+<main>
+    <h2>Assign Course Fee</h2>
+
+    <form method="POST" action="/assign_fee">
+
+        <label>Student</label><br>
+        <select name="student_id" required>
+            <option value="">Select Student</option>
+            {% for student in students %}
+            <option value="{{ student['id'] }}">
+                {{ student['name'] }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>Course</label><br>
+        <select name="course_id" required>
+            <option value="">Select Course</option>
+            {% for course in courses %}
+            <option value="{{ course['id'] }}">
+                {{ course['course_name'] }} -
+                Class {{ course['class_name'] }}
+                (₹{{ "%.2f"|format(course['fee']) }})
+            </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>Total Fee (₹)</label><br>
+        <input type="number" name="total_fee"
+               min="0" step="0.01" required>
+
+        <br><br>
+
+        <button type="submit">Assign Fee</button>
+    </form>
+
+    <hr>
+
+    <h2>Record Payment</h2>
+
+    <form method="POST" action="/record_payment">
+
+        <label>Student — Course</label><br>
+        <select name="fee_id" required>
+            <option value="">Select Fee Record</option>
+            {% for fee in fees %}
+            <option value="{{ fee['id'] }}">
+                {{ fee['student_name'] }} -
+                {{ fee['course_name'] }} -
+                Balance ₹{{ "%.2f"|format(fee['balance']) }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>Payment Amount (₹)</label><br>
+        <input type="number" name="amount"
+               min="0.01" step="0.01" required>
+
+        <br><br>
+
+        <label>Payment Date</label><br>
+        <input type="date" name="payment_date"
+               value="{{ today }}" required>
+
+        <br><br>
+
+        <label>Payment Method</label><br>
+        <select name="payment_method" required>
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Card">Card</option>
+        </select>
+
+        <br><br>
+
+        <label>Notes / Reference</label><br>
+        <input type="text" name="notes">
+
+        <br><br>
+
+        <button type="submit">Save Payment</button>
+    </form>
+
+    <hr>
+
+    <h2>Student Fee Summary</h2>
+
+    <table border="1" width="100%">
+        <tr>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Total Fee</th>
+            <th>Paid</th>
+            <th>Balance</th>
+            <th>Status</th>
+            <th>History</th>
+        </tr>
+
+        {% for fee in fees %}
+        <tr>
+            <td>{{ fee['student_name'] }}</td>
+            <td>{{ fee['course_name'] }}</td>
+            <td>₹{{ "%.2f"|format(fee['total_fee']) }}</td>
+            <td>₹{{ "%.2f"|format(fee['paid']) }}</td>
+            <td>₹{{ "%.2f"|format(fee['balance']) }}</td>
+            <td>
+                {% if fee['balance'] == 0 %}
+                    Paid
+                {% else %}
+                    Pending
+                {% endif %}
+            </td>
+            <td>
+                <a href="/fee_history/{{ fee['id'] }}">View</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if not fees %}
+        <p>No fee records available yet.</p>
+    {% endif %}
+
+</main>
+</body>
+</html>

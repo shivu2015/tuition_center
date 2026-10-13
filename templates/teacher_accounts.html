@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Accounts</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Teacher Account Management</h1>
+</header>
+
+<main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message {{ category }}" role="status">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="enrollment-panel">
+        <h2>Create Teacher Login</h2>
+
+        {% if teachers %}
+            <form method="POST" action="{{ url_for('manage_teacher_accounts') }}">
+
+                <div class="form-group">
+                    <label for="teacher_id">Select Teacher</label>
+                    <select id="teacher_id" name="teacher_id" required>
+                        <option value="">Choose a teacher</option>
+                        {% for teacher in teachers %}
+                            <option value="{{ teacher['id'] }}">
+                                {{ teacher['name'] }} — {{ teacher['subject'] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username"
+                           autocomplete="off" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Temporary password</label>
+                    <input type="password" id="password" name="password"
+                           minlength="8" autocomplete="new-password" required>
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    Create Teacher Account
+                </button>
+            </form>
+        {% else %}
+            <div class="empty-state">
+                <p>All existing teachers already have accounts, or no teacher records exist.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="enrollment-panel">
+        <h2>Existing Teacher Accounts</h2>
+
+        {% if accounts %}
+            <div class="table-responsive">
+                <table class="enrollment-table">
+                    <thead>
+                        <tr>
+                            <th>Teacher</th>
+                            <th>Subject</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in accounts %}
+                            <tr>
+                                <td>{{ account['teacher_name'] }}</td>
+                                <td>{{ account['subject'] }}</td>
+                                <td>{{ account['username'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No teacher login accounts have been created yet.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <p><a href="{{ url_for('home') }}">Back to Admin Dashboard</a></p>
+
+</main>
+</body>
+</html>

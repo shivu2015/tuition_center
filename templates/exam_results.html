@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Examination Results</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Tuition Center Management System</h1>
+    <p>Examination Results</p>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/exams">Exams</a>
+    <a href="/students">Students</a>
+</nav>
+
+<main>
+    <h2>All Student Results</h2>
+
+    <table border="1" width="100%">
+        <tr>
+            <th>Student</th>
+            <th>Exam</th>
+            <th>Course</th>
+            <th>Marks Obtained</th>
+            <th>Maximum Marks</th>
+            <th>Percentage</th>
+        </tr>
+
+        {% for result in results %}
+        <tr>
+            <td>{{ result['student_name'] }}</td>
+            <td>{{ result['exam_name'] }}</td>
+            <td>{{ result['course_name'] }}</td>
+            <td>{{ result['marks_obtained'] }}</td>
+            <td>{{ result['max_marks'] }}</td>
+            <td>
+                {{ "%.2f"|format(
+                    result['marks_obtained'] * 100 / result['max_marks']
+                ) }}%
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if not results %}
+        <p>No examination marks recorded yet.</p>
+    {% endif %}
+</main>
+
+</body>
+</html>
